@@ -11,7 +11,7 @@ while(1):
         rect = rects[0]
     else:
         cv2.imshow("Frame", input)
-        k = cv2.waitKey(1) & 0xFF
+        k = cv2.waitKey(30) & 0xFF
         continue
     blink_count += ear_detector(input,grayscale,rect)
     print("blink_count", blink_count)
