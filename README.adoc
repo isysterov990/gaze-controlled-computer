@@ -21,7 +21,7 @@ Recommended to be used with Pycharm: https://www.jetbrains.com/pycharm/
 Within Pycharm click on requirements.txt and install requirements
 
 Download and unpack the trained model file from http://dlib.net/files.  shape_predictor_68_face_landmarks.dat.bz2.
-The file should be placed in the project folder.
+The file should be placed in the /models.
 
 
 
