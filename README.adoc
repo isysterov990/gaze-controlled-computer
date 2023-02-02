@@ -12,166 +12,18 @@
 toc::[]
 
 == Introduction
-Control the computer's mouse pointer using gaze detection, which utilizes a deep learning model to estimate the user's eye gaze and adjust the mouse pointer's position. This application integrates face detection, head pose estimation, and facial landmarks models to accurately determine the user's gaze.
 
 
 == Prerequisites
 
-Steps to install Open Vino: https://medium.com/coding-blocks/how-to-install-openvino-on-ubuntu-18-04-e8d7d2dc1a8e
+Recommended to be used with Pycharm: https://www.jetbrains.com/pycharm/
 
-The below steps only work on Ubuntu 16.04:
+Within Pycharm click on requirements.txt and install requirements
 
-[source,bash]
-----
-# Install OpenVino
-wget http://registrationcenter-download.intel.com/akdlm/irc_nas/16612/l_openvino_toolkit_p_2020.2.120.tgz
-tar -xvf l_openvino_toolkit_p_2020.2.120.tgz
-cd l_openvino_toolkit_p_2020.2.120
-sed -i 's/decline/accept/g' silent.cfg
-sudo ./install.sh -s silent.cfg
-cd /opt/intel/openvino/install_dependencies
-sudo -E ./install_openvino_dependencies.sh
-source /opt/intel/openvino/bin/setupvars.sh
-cd /opt/intel/openvino/deployment_tools/model_optimizer/install_prerequisites
-sudo ./install_prerequisites.sh
+Download and unpack the trained model file from http://dlib.net/files.  shape_predictor_68_face_landmarks.dat.bz2.
+The file should be placed in the project folder.
 
 
-# System dep
-sudo apt update
-sudo apt-get install python3-pip
-pip3 install --upgrade pip
-pip3 install numpy
-pip3 install paho-mqtt
-sudo apt install libzmq3-dev libkrb5-dev
-sudo apt install ffmpeg
-sudo apt-get install cmake
-sudo apt-get install python3-venv
-
-#Inside Project Directory
-
-    # Project dep
-    pip3 install -r requirements.txt
-
-    # Model download
-    bash scripts/download_models.sh
-----
-
-== Usage
-=== Command Line Options
-[source, bash]
-----
-usage: main.py [-h] -i INPUT -m_fd MODE_FACE_DETECTION
-               [-d_fd {CPU,GPU,FPGA,MYRIAD,HETERO,HDDL}] [-t_fd [0..1]]
-               [-o_fd] -m_hp MODEL_HEAD_POSITION
-               [-d_hp {CPU,GPU,FPGA,MYRIAD,HETERO,HDDL}] [-o_hp] -m_lm
-               MODEL_LANDMARK_REGRESSOR
-               [-d_lm {CPU,GPU,FPGA,MYRIAD,HETERO,HDDL}] [-o_lm] -m_gm
-               MODEL_GAZE [-d_gm {CPU,GPU,FPGA,MYRIAD,HETERO,HDDL}] [-o_gm]
-               [-o_mc] [-pc] [-exp_r_fd NUMBER] [-cw CROP_WIDTH] [-v]
-               [-l PATH] [-c PATH] [--no_show] [-tl] [-o PATH]
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -i INPUT, --input INPUT
-                        Path to image or video file or enter cam for webcam
-  -m_fd MODE_FACE_DETECTION, --mode_face_detection MODE_FACE_DETECTION
-                        Path to an .xml file with a trained Face Detection
-                        model
-  -d_fd {CPU,GPU,FPGA,MYRIAD,HETERO,HDDL}
-                        (optional) Target device for the Face Detection model
-                        (default: CPU)
-  -t_fd [0..1]          (optional) Probability threshold for face
-                        detections(default: 0.4)
-  -o_fd                 (optional) Show face detection output
-  -m_hp MODEL_HEAD_POSITION, --model_head_position MODEL_HEAD_POSITION
-                        Path to an .xml file with a trained Head Pose
-                        Estimation model
-  -d_hp {CPU,GPU,FPGA,MYRIAD,HETERO,HDDL}
-                        (optional) Target device for the Head Position model
-                        (default: CPU)
-  -o_hp                 (optional) Show HeadPsition output
-  -m_lm MODEL_LANDMARK_REGRESSOR, --model_landmark_regressor MODEL_LANDMARK_REGRESSOR
-                        Path to an .xml file with a trained Head Pose
-                        Estimation model
-  -d_lm {CPU,GPU,FPGA,MYRIAD,HETERO,HDDL}
-                        (optional) Target device for the Facial Landmarks
-                        Regression model (default: CPU)
-  -o_lm                 (optional) Show Landmark detection output
-  -m_gm MODEL_GAZE, --model_gaze MODEL_GAZE
-                        Path to an .xml file with a trained Gaze Estimation
-                        model
-  -d_gm {CPU,GPU,FPGA,MYRIAD,HETERO,HDDL}
-                        (optional) Target device for the Gaze estimation model
-                        (default: CPU)
-  -o_gm                 (optional) Show Gaze estimation output
-  -o_mc                 (optional) Run mouse counter
-  -pc, --perf_stats     (optional) Output detailed per-layer performance stats
-  -exp_r_fd NUMBER      (optional) Scaling ratio for bboxes passed to face
-                        recognition (default: 1.15)
-  -cw CROP_WIDTH, --crop_width CROP_WIDTH
-                        (optional) Crop the input stream to this width
-                        (default: no crop). Both -cw and -ch parameters should
-                        be specified to use crop.
-  -v, --verbose         (optional) Be more verbose
-  -l PATH, --cpu_lib PATH
-                        (optional) For MKLDNN (CPU)-targeted custom layers, if
-                        any. Path to a shared library with custom layers
-                        implementations
-  -c PATH, --gpu_lib PATH
-                        (optional) For clDNN (GPU)-targeted custom layers, if
-                        any. Path to the XML file with descriptions of the
-                        kernels
-  --no_show             (optional) Do not display output
-  -tl, --timelapse      (optional) Auto-pause after each frame
-  -o PATH, --output PATH
-                        (optional) Path to save the output video to
-
-----
-=== Run
-
-==== Face Detection
-[source,bash]
-----
-python3.6 main.py -i cam -m_fd mo_model/intel/face-detection-adas-binary-0001/FP32-INT1/face-detection-adas-binary-0001.xml -m_hp mo_model/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001.xml -m_lm mo_model/intel/facial-landmarks-35-adas-0002/FP32/facial-landmarks-35-adas-0002.xml -m_g mo_model/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002.xml -o_fd
-----
-
-
-==== Head Pose Estimation
-[source,bash]
-----
-python3.6 main.py -i cam -m_fd mo_model/intel/face-detection-adas-binary-0001/FP32-INT1/face-detection-adas-binary-0001.xml -m_hp mo_model/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001.xml -m_lm mo_model/intel/facial-landmarks-35-adas-0002/FP32/facial-landmarks-35-adas-0002.xml -m_g mo_model/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002.xml -o_hp
-----
-
-
-
-==== Landmark regression
-[source,bash]
-----
-python3.6 main.py -i cam -m_fd mo_model/intel/face-detection-adas-binary-0001/FP32-INT1/face-detection-adas-binary-0001.xml -m_hp mo_model/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001.xml -m_lm mo_model/intel/facial-landmarks-35-adas-0002/FP32/facial-landmarks-35-adas-0002.xml -m_g mo_model/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002.xml -o_lm
-----
-
-
-
-==== Gaze Estimation
-[source,bash]
-----
-python3.6 main.py -i cam -m_fd mo_model/intel/face-detection-adas-binary-0001/FP32-INT1/face-detection-adas-binary-0001.xml -m_hp mo_model/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001.xml -m_lm mo_model/intel/facial-landmarks-35-adas-0002/FP32/facial-landmarks-35-adas-0002.xml -m_g mo_model/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002.xml -o_gm
-----
-
-
-
-====
-
-==== Mouse Pointer
-[source,bash]
-----
-python3.6 main.py -i cam -m_fd mo_model/intel/face-detection-adas-binary-0001/FP32-INT1/face-detection-adas-binary-0001.xml -m_hp mo_model/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001.xml -m_lm mo_model/intel/facial-landmarks-35-adas-0002/FP32/facial-landmarks-35-adas-0002.xml -m_g mo_model/intel/gaze-estimation-adas-0002/FP32/gaze-estimation-adas-0002.xml -o_mc -o_gm -o_lm -o_hp -o_fd
-----
-
-
-
-[quote]
-try removing frame_count % 10 == 0: in main.py for improved performance.
 
 
 

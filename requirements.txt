@@ -3,4 +3,4 @@ cmake
 dlib
 numpy
 imutils
-import pyautogui
+pyautogui
