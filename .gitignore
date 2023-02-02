@@ -1,2 +1,4 @@
 # Default ignored files
 /.idea
+/venv
+/shape_predictor_68_face_landmarks.dat
