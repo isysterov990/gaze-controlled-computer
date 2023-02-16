@@ -9,8 +9,9 @@ EYE_BLINK_CONSTANT = 0.25
 (lStart, lEnd) = face_utils.FACIAL_LANDMARKS_IDXS["left_eye"]
 (rStart, rEnd) = face_utils.FACIAL_LANDMARKS_IDXS["right_eye"]
 
-def ear_detector(input, grayscale ,rect):
-    blink_count=0
+
+def ear_detector(input, grayscale, rect):
+    blink_count = 0
     landmarks = predictor(grayscale, rect)
     landmarks = face_utils.shape_to_np(landmarks)
     leftEyeLandmarks = landmarks[lStart:lEnd]
@@ -20,7 +21,6 @@ def ear_detector(input, grayscale ,rect):
     ear = (leftEAR + rightEAR) / 2.0
     if ear < EYE_BLINK_CONSTANT:
         cv2.putText(input, "Blink", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
-        blink_count+=1
-
+        blink_count += 1
 
     return blink_count
