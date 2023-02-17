@@ -6,12 +6,15 @@ kp1_x_min = 100000
 kp1_y_min = 100000
 kp1_x_max = 0
 kp1_y_max = 0
-screen_x = 1920
-screen_y = 1080
+screen_x, screen_y = pyautogui.size()
+# screen_x = 1920
+# screen_y = 1080
+
+
 def move_mouse(average_x, average_y):
     pyautogui.FAILSAFE = False
-    global kp1_x_min 
-    global kp1_y_min 
+    global kp1_x_min
+    global kp1_y_min
     global kp1_x_max
     global kp1_y_max
 
@@ -32,7 +35,7 @@ def move_mouse(average_x, average_y):
         if avg_x < kp1_x_min:
             kp1_x_min = avg_x
         elif avg_x > kp1_x_max:
-            kp1_x_max = avg_x 
+            kp1_x_max = avg_x
 
         if avg_y < kp1_y_min:
             kp1_y_min = avg_y
@@ -44,12 +47,12 @@ def move_mouse(average_x, average_y):
         # print('y_min: ', kp1_y_min)
         # print('y_max: ', kp1_y_max)
 
-        scaled_x = (((avg_x - kp1_x_min)/(kp1_x_max - kp1_x_min)) * (screen_x))
-        scaled_y = (((avg_y - kp1_y_min)/(kp1_y_max - kp1_y_min)) * (screen_y))
+        scaled_x = (((avg_x - kp1_x_min) / (kp1_x_max - kp1_x_min)) * screen_x)
+        scaled_y = (((avg_y - kp1_y_min) / (kp1_y_max - kp1_y_min)) * screen_y)
 
         # print('scaled_x: ', scaled_x)
         # print('scaled_y: ', scaled_y)
-        pyautogui.moveTo(scaled_x, scaled_y, 0.5) 
+        pyautogui.moveTo(scaled_x, scaled_y, 0.5)
         # if avg_x > w_1 / 2:
         #     print(f"Eyes are facing right {x} {y}")
         #     pyautogui.moveRel(-30, 0)
@@ -64,4 +67,3 @@ def move_mouse(average_x, average_y):
         #     pyautogui.moveRel(0, -30)
         average_x.clear()
         average_y.clear()
-    
