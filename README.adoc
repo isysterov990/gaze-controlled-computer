@@ -11,8 +11,8 @@
 
 toc::[]
 
-== Introduction
-
+== Abstract
+Our gaze controlled computer software will be implemented in Python with the help of OpenCV and PyAutoGUI. A 1080p webcam mounted on an adjustable arm that will be anchored to a table will be used as inputs to our software. This camera will gather frame data of the user’s eyes, passing each frame through image filters, edge detection and circular Hough transform. These processed frames can then be utilized to calibrate and track the user’s eye movements. The data will then be mapped to the screen and the user can interact with the computer by blinking. A virtual keyboard can be brought up to assist the user with typing. The keyboard will be controlled by looking at a key for a certain amount of time. This software will enable physically disabled people to operate computers.
 
 == Prerequisites
 
