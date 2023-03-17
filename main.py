@@ -10,7 +10,6 @@ from detectors.blink_detector import *
 from detectors.keypoint_detector import *
 from mouse_control import *
 import pyautogui
-import PySimpleGUI as psg
 import threading
 
 capture = cv2.VideoCapture(0)
