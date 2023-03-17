@@ -14,6 +14,7 @@ count = 0
 while (1):
     _, input = capture.read()  # used _ to ignore the boolean returned by .read()
     input = cv2.flip(input, 1)
+    blink_count_new = blink_count
     # grayscale = cv2.cvtColor(input, cv2.COLOR_BGR2GRAY)
     # rects = detector(grayscale, 0)
     # if len(rects) > 0:
@@ -25,8 +26,8 @@ while (1):
     # blink_count += ear_detector(input,grayscale,rect)
     # print("blink_count", blink_count)
     eye_frames = detect_eyes(input)
-
     if eye_frames is not None:
+        blink_count += ear_detector(input)
         keypoints = find_keypoints(eye_frames)
         if keypoints:
             x = keypoints[0].pt[0]
