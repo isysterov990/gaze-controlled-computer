@@ -8,6 +8,10 @@ from typing import Optional
 face_cascade = cv2.CascadeClassifier('./models/haarcascade_frontalface_default.xml')
 eye_cascade = cv2.CascadeClassifier('./models/haarcascade_eye.xml')
 
+
+
+
+
 def detect_eyes(input):
     input = imutils.resize(input, width=700)
     grayscale = cv2.cvtColor(input, cv2.COLOR_BGR2GRAY)
@@ -45,4 +49,4 @@ def detect_eyes(input):
             #         print("Eyes are facing up")
             #         pyautogui.moveRel(0, -25)
 
-    #cv2.imshow('output', input)
+    cv2.imshow('output', input)
