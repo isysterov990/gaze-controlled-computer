@@ -45,4 +45,4 @@ def detect_eyes(input):
             #         print("Eyes are facing up")
             #         pyautogui.moveRel(0, -25)
 
-    #cv2.imshow('output', input)
+    cv2.imshow('output', input)
