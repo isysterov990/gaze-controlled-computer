@@ -4,6 +4,7 @@ import tkinter as tk
 
 import subprocess
 import os
+import time
 
 from detectors.feature_detector import *
 from detectors.blink_detector import *
@@ -108,6 +109,58 @@ count = 0
 # thread.start()
 
 
+
+pyautogui.FAILSAFE = False
+start_time = time.time()
+
+#CALIBRATION PROCESS
+x_min = 10000
+x_max = 0
+y_min = 10000
+y_max = 0
+
+while ((time.time() - start_time) < 15):
+    _, input = capture.read()  # used _ to ignore the boolean returned by .read()
+    input = cv2.flip(input, 1)
+    eye_frames = detect_eyes(input)
+
+    if eye_frames is not None:
+        left_keypoint = find_keypoints(eye_frames[0])
+        right_keypoint = find_keypoints(eye_frames[1])
+        if left_keypoint and right_keypoint:
+            avg_x = (left_keypoint[0].pt[0] + right_keypoint[0].pt[0]) / 2
+            avg_y = (left_keypoint[0].pt[1] + right_keypoint[0].pt[1]) / 2
+
+            keypoints.append([avg_x, avg_y])
+
+            if len(keypoints) == 2:
+                avg_keypoint = 2 * [0]  # avgs per column
+                nelem = float(2)
+                for col in range(2):
+                    for row in range(2):
+                        avg_keypoint[col] += keypoints[row][col]
+                    avg_keypoint[col] /= nelem
+                print('avg: ', avg_keypoint)
+
+                del keypoints[:]
+
+                x = avg_keypoint[0]
+                y = avg_keypoint[1]
+
+                if x < x_min:
+                    x_min = x
+                elif x > x_max:
+                    x_max = x
+                if y < y_min:
+                    y_min = y
+                elif y > y_max:
+                    y_max = y
+                    
+print(x_min, x_max, y_min, y_max)
+
+
+
+#MAIN LOOP
 while 1:
     window.update()
     _, input = capture.read()  # used _ to ignore the boolean returned by .read()
