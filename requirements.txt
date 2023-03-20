@@ -4,4 +4,3 @@ dlib
 numpy
 imutils
 pyautogui
-tk
