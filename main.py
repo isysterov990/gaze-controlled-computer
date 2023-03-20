@@ -4,7 +4,16 @@ from detectors.keypoint_detector import *
 from mouse_control import *
 import pyautogui
 import time
+<<<<<<< Updated upstream
 
+=======
+import tkinter as tk
+
+root = tk.Tk()
+width = root.winfo_screenwidth()
+height = root.winfo_screenheight()
+
+>>>>>>> Stashed changes
 pyautogui.FAILSAFE = False
 start_time = time.time()
 capture = cv2.VideoCapture(0)
@@ -25,6 +34,7 @@ current_position = []
 
 #calibration
 while ((time.time() - start_time) < 15):
+<<<<<<< Updated upstream
     _, input = capture.read()  # used _ to ignore the boolean returned by .read()
     input = cv2.flip(input, 1)
     eye_frames = detect_eyes(input)
@@ -87,6 +97,10 @@ while (1):
     #     continue
     # blink_count += ear_detector(input,grayscale,rect)
     # print("blink_count", blink_count)
+=======
+    _, input = capture.read()  # used _ to ignore the boolean returned by .read()
+    input = cv2.flip(input, 1)
+>>>>>>> Stashed changes
     eye_frames = detect_eyes(input)
 
     if eye_frames is not None:
@@ -97,6 +111,7 @@ while (1):
             avg_y = (left_keypoint[0].pt[1] + right_keypoint[0].pt[1]) / 2
 
             keypoints.append([avg_x, avg_y])
+<<<<<<< Updated upstream
             if len(keypoints) == 8:
                 avg_keypoint = 2*[0] # avgs per column
                 nelem = float(8)
@@ -140,6 +155,75 @@ while (1):
     #     count = 0
     # else:
     #     count += 1
+=======
+
+            if len(keypoints) == 2:
+                avg_keypoint = 2 * [0]  # avgs per column
+                nelem = float(2)
+                for col in range(2):
+                    for row in range(2):
+                        avg_keypoint[col] += keypoints[row][col]
+                    avg_keypoint[col] /= nelem
+                print('avg: ', avg_keypoint)
+
+                del keypoints[:]
+
+                x = avg_keypoint[0]
+                y = avg_keypoint[1]
+
+                if x < x_min:
+                    x_min = x
+                elif x > x_max:
+                    x_max = x
+                if y < y_min:
+                    y_min = y
+                elif y > y_max:
+                    y_max = y
+
+print(x_min, x_max, y_min, y_max)
+while (1):
+    _, input = capture.read()  # used _ to ignore the boolean returned by .read()
+    input = cv2.flip(input, 1)
+    eye_frames = detect_eyes(input)
+
+    if eye_frames is not None:
+        left_keypoint = find_keypoints(eye_frames[0])
+        right_keypoint = find_keypoints(eye_frames[1])
+        if left_keypoint and right_keypoint:
+            avg_x = (left_keypoint[0].pt[0] + right_keypoint[0].pt[0]) / 2
+            avg_y = (left_keypoint[0].pt[1] + right_keypoint[0].pt[1]) / 2
+
+            keypoints.append([avg_x, avg_y])
+            if len(keypoints) == 8:
+                avg_keypoint = 2*[0] # avgs per column
+                nelem = float(8)
+                for col in range(2):
+                    for row in range(8):
+                        avg_keypoint[col] += keypoints[row][col]
+                    avg_keypoint[col] /= nelem
+                print('avg: ', avg_keypoint)
+
+                del keypoints[:] 
+
+                x = avg_keypoint[0]
+                y = avg_keypoint[1]
+
+                #standardizing x and y coordinates to the size of the screen
+                x_move = (x - x_min) * (width / (x_max - x_min))
+                y_move = (y - y_min) * (height / (y_max - y_min))
+
+                print('moving to: ', x_move, y)
+                if x_move < 0:
+                    x_move = 0
+                elif x_move > width:
+                    x_move = width
+                if y_move < 0:
+                    y_move = 0
+                elif y_move > height:
+                    y_move = height
+
+                pyautogui.moveTo(x_move, y_move, 0.5)
+>>>>>>> Stashed changes
 
     k = cv2.waitKey(30) & 0xff
     if k == 27:
