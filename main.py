@@ -48,13 +48,31 @@ def open_file():
 # def gui():
 window = tk.Tk()
 # window = tk.Toplevel()
-window.geometry("1230x720")
-btn_browser = tk.Button(master=window, width=50,
-                        height=25, text="Web Browser", command=open_browser)
-btn_browser.grid(row=0, column=0, sticky="nsew")
-btn_file = tk.Button(master=window, width=50,
-                     height=25, text="File Browser", command=open_file)
-btn_file.grid(row=0, column=1, sticky="nsew")
+overlay = tk.Toplevel(window)
+overlay.attributes("-alpha", 0.8)
+# overlay.geometry("1600x900+0+0")
+overlay.geometry("{}x{}+0+0".format(screen_x, screen_y))
+# btn_browser = tk.Button(master=overlay, width=50,
+#                         height=25, text="Web Browser", command=open_browser)
+# btn_browser.grid(row=0, column=0, sticky="nsew")
+# btn_file = tk.Button(master=overlay, width=50,
+#                      height=25, text="File Browser", command=open_file)
+# btn_file.grid(row=0, column=1, sticky="nsew")
+btn_north = tk.Button(master=overlay, width=50,
+                      height=25, text="Open Browser", command=open_browser)
+btn_north.place(relx=0.5, rely=0.2, anchor='center')
+
+btn_south = tk.Button(master=overlay, width=50,
+                      height=25, text="South", command=open_file)
+btn_south.place(relx=0.5, rely=0.8, anchor='center')
+
+btn_east = tk.Button(master=overlay, width=50,
+                     height=25, text="Open File Explorer", command=open_file)
+btn_east.place(relx=0.8, rely=0.5, anchor='center')
+
+btn_west = tk.Button(master=overlay, width=50,
+                     height=25, text="West", command=open_file)
+btn_west.place(relx=0.2, rely=0.5, anchor='center')
 
 # window.mainloop()
 
@@ -109,17 +127,16 @@ count = 0
 # thread.start()
 
 
-
 pyautogui.FAILSAFE = False
 start_time = time.time()
 
-#CALIBRATION PROCESS
+# CALIBRATION PROCESS
 x_min = 10000
 x_max = 0
 y_min = 10000
 y_max = 0
 
-while ((time.time() - start_time) < 15):
+while (time.time() - start_time) < 3:
     _, input = capture.read()  # used _ to ignore the boolean returned by .read()
     input = cv2.flip(input, 1)
     eye_frames = detect_eyes(input)
@@ -155,12 +172,10 @@ while ((time.time() - start_time) < 15):
                     y_min = y
                 elif y > y_max:
                     y_max = y
-                    
+
 print(x_min, x_max, y_min, y_max)
 
-
-
-#MAIN LOOP
+# MAIN LOOP
 while 1:
     window.update()
     _, input = capture.read()  # used _ to ignore the boolean returned by .read()
