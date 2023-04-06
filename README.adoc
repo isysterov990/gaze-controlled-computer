@@ -1,4 +1,4 @@
-= Computer-Pointer-Controller
+= Gaze Controlled Computer
 :idprefix:
 :idseparator: -
 :sectanchors:
