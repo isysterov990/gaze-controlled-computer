@@ -27,8 +27,7 @@ parameters.maxConvexity = 1
 
 detector = cv2.SimpleBlobDetector_create(parameters)
 
+
 def find_keypoints(eye_frames):
     keypoints = detector.detect(eye_frames)
     return keypoints
-    
-    

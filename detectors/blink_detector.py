@@ -11,8 +11,9 @@ EYE_BLINK_CONSTANT = 0.25
 (lStart, lEnd) = face_utils.FACIAL_LANDMARKS_IDXS["left_eye"]
 (rStart, rEnd) = face_utils.FACIAL_LANDMARKS_IDXS["right_eye"]
 
+
 def ear_detector(input):
-    blink_count=0
+    blink_count = 0
     grayscale = cv2.cvtColor(input, cv2.COLOR_BGR2GRAY)
     rects = detector(grayscale, 0)
     rect = rects[0]
@@ -25,9 +26,8 @@ def ear_detector(input):
     ear = (leftEAR + rightEAR) / 2.0
     if ear < EYE_BLINK_CONSTANT:
         cv2.putText(input, "Blink", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
-        blink_count+=1
+        blink_count += 1
         print("click")
         click_mouse()
-
 
     return blink_count

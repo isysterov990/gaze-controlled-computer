@@ -7,11 +7,15 @@ kp1_y_min = 100000
 kp1_x_max = 0
 kp1_y_max = 0
 screen_x, screen_y = pyautogui.size()
+
+
 # screen_x = 1920
 # screen_y = 1080
 
 def click_mouse():
     pyautogui.click()
+
+
 def move_mouse(average_x, average_y):
     pyautogui.FAILSAFE = False
     global kp1_x_min
