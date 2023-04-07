@@ -16,6 +16,13 @@ def open_file():
         subprocess.call(["open", path])
 
 
+def change_button(btn, choice):
+    if choice == "browser":
+        btn.config(text="Open browser", command=open_browser)
+    elif choice == "files":
+        btn.config(text="Open files", command=open_file)
+
+
 def create_gui(x, y):
     # window = tk.Tk()
     # This will always make window on top
@@ -42,5 +49,10 @@ def create_gui(x, y):
                          height=25, text="West", command=open_file)
     # btn_west.config(bg="white", activebackground="white", alpha=1)
     btn_west.place(relx=0.2, rely=0.5, anchor='center')
+
+    btn_change = tk.Button(master=overlay, width=25,
+                           height=25, text="change", command=lambda: change_button(btn_north, "files"), bg='white')
+    btn_change.configure(highlightthickness=0, highlightbackground=btn_north['bg'])
+    btn_change.place(relx=0.5, rely=0.5, anchor='center')
 
     return overlay
