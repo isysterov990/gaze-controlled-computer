@@ -17,10 +17,10 @@ def open_file():
 
 
 def change_button(btn, choice):
-    if choice == "browser":
-        btn.config(text="Open browser", command=open_browser)
-    elif choice == "files":
-        btn.config(text="Open files", command=open_file)
+    if choice == "Browser":
+        btn.config(text="Open Browser", command=open_browser)
+    elif choice == "Files":
+        btn.config(text="Open File Explorer", command=open_file)
 
 
 def create_gui(x, y):
@@ -50,8 +50,18 @@ def create_gui(x, y):
     # btn_west.config(bg="white", activebackground="white", alpha=1)
     btn_west.place(relx=0.2, rely=0.5, anchor='center')
 
-    btn_change = tk.Button(master=overlay, width=25,
-                           height=25, text="change", command=lambda: change_button(btn_north, "files"), bg='white')
+    # btn_change = tk.Button(master=overlay, width=25,
+    #                        height=25, text="change", command=lambda: change_button(btn_north, "files"), bg='white')
+    # btn_change.configure(highlightthickness=0, highlightbackground=btn_north['bg'])
+    # btn_change.place(relx=0.5, rely=0.5, anchor='center')
+
+    options = ["Browser", "Files"]
+
+    selected_option = tk.StringVar()
+    selected_option.set("Select")
+
+    btn_change = tk.OptionMenu(overlay, selected_option, *options,
+                               command=lambda choice: change_button(btn_north, choice))
     btn_change.configure(highlightthickness=0, highlightbackground=btn_north['bg'])
     btn_change.place(relx=0.5, rely=0.5, anchor='center')
 
