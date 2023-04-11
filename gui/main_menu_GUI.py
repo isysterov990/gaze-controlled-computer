@@ -124,9 +124,12 @@ def open_calibration_window():
     cal_canvas.pack(fill="both", expand=True)
     cal_canvas.place(x = -2, y = -2)
 
-    calibration_button = PhotoImage(file="./images/calibration_button.png")
-    calibration_instructions = PhotoImage(file="./images/calibration_instruction.png")
+    calibration_button = PhotoImage(file=os.path.join(script_dir,"./images/calibration_button.png"))
+    calibration_instructions = PhotoImage(file=os.path.join(script_dir,"./images/calibration_instruction.png"))
 
+    def changeText():
+            button_1.config(image=calibration_instructions)
+            
     button_1 = Button(
         master = calibration_window,
         image=calibration_button,
@@ -142,8 +145,7 @@ def open_calibration_window():
         height=288.0
     )
 
-    def changeText():
-        button_1.config(image=calibration_instructions)
+    
 
     calibration_window.resizable(False, False)
     # calibration_dot = PhotoImage(
