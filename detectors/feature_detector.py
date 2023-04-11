@@ -1,11 +1,12 @@
 import numpy as np
 import cv2
 import imutils
-import pyautogui
-from typing import Optional
+import sys, os
 
-face_cascade = cv2.CascadeClassifier('./models/haarcascade_frontalface_default.xml')
-eye_cascade = cv2.CascadeClassifier('./models/haarcascade_eye.xml')
+dir = sys.path[0]
+
+face_cascade = cv2.CascadeClassifier(os.path.join(dir, './models/haarcascade_frontalface_default.xml'))
+eye_cascade = cv2.CascadeClassifier(os.path.join(dir, './models/haarcascade_eye.xml'))
 
 def detect_eyes(input):
     input = imutils.resize(input, width=700)

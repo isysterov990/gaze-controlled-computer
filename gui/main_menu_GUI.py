@@ -1,6 +1,8 @@
 from tkinter import Tk, Canvas, Button, PhotoImage, Toplevel
-from user_interface import calibration
+from gui.calibration import *
+import sys, os
 
+script_dir = sys.path[0]
 main_menu = Tk()
 
 def open_main_menu():
@@ -41,7 +43,7 @@ def open_main_menu():
         font=("Lato Regular", 64 * -1)
     )
 
-    image_image_1 = PhotoImage(file="./assets/image_1.png")
+    image_image_1 = PhotoImage(file=os.path.join(script_dir, "assets/image_1.png"))
     canvas.create_image(
         260.0,
         469.0,
@@ -49,7 +51,7 @@ def open_main_menu():
     )
 
     button_image_1 = PhotoImage(
-        file="./assets/button_1.png")
+        file=os.path.join(script_dir, "./assets/button_1.png"))
     button_1 = Button(
         image=button_image_1,
         borderwidth=0,
@@ -65,7 +67,7 @@ def open_main_menu():
     )
 
     button_image_2 = PhotoImage(
-        file="./assets/button_2.png")
+        file=os.path.join(script_dir, "./assets/button_2.png"))
     button_2 = Button(
         image=button_image_2,
         borderwidth=0,
@@ -81,7 +83,7 @@ def open_main_menu():
     )
 
     button_image_3 = PhotoImage(
-        file="./assets/button_3.png")
+        file=os.path.join(script_dir, "./assets/button_3.png"))
     button_3 = Button(
         image=button_image_3,
         borderwidth=0,
@@ -97,7 +99,7 @@ def open_main_menu():
     )
 
     image_image_2 = PhotoImage(
-        file="./assets/image_2.png")
+        file=os.path.join(script_dir, "./assets/image_2.png"))
     image_2 = canvas.create_image(
         394.0,
         165.0,
