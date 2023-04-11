@@ -1,116 +1,14 @@
-from detectors.feature_detector import *
-from detectors.blink_detector import *
-from detectors.keypoint_detector import *
-from mouse_control import *
 from gui.gui import *
+from gui import main_menu_GUI
 
-import time
-import pyautogui
-import threading
+calibration_points = []
+#screen_x, screen_y = pyautogui.size()
 
-capture = cv2.VideoCapture(0)
+#overlay = create_gui(screen_x, screen_y)
 
-screen_x, screen_y = pyautogui.size()
+main_menu_GUI.open_main_menu()
 
-overlay = create_gui(screen_x, screen_y)
 
-blink_count = 0
 
-average_x = []
-average_y = []
-count = 0
 
-pyautogui.FAILSAFE = False
-start_time = time.time()
 
-# CALIBRATION PROCESS
-x_min = 10000
-x_max = 0
-y_min = 10000
-y_max = 0
-
-while (time.time() - start_time) < 3:
-    _, input = capture.read()  # used _ to ignore the boolean returned by .read()
-    input = cv2.flip(input, 1)
-    eye_frames = detect_eyes(input)
-
-    if eye_frames is not None:
-        left_keypoint = find_keypoints(eye_frames[0])
-        right_keypoint = find_keypoints(eye_frames[1])
-        if left_keypoint and right_keypoint:
-            avg_x = (left_keypoint[0].pt[0] + right_keypoint[0].pt[0]) / 2
-            avg_y = (left_keypoint[0].pt[1] + right_keypoint[0].pt[1]) / 2
-
-            keypoints.append([avg_x, avg_y])
-
-            if len(keypoints) == 2:
-                avg_keypoint = 2 * [0]  # avgs per column
-                nelem = float(2)
-                for col in range(2):
-                    for row in range(2):
-                        avg_keypoint[col] += keypoints[row][col]
-                    avg_keypoint[col] /= nelem
-                print('avg: ', avg_keypoint)
-
-                del keypoints[:]
-
-                x = avg_keypoint[0]
-                y = avg_keypoint[1]
-
-                if x < x_min:
-                    x_min = x
-                elif x > x_max:
-                    x_max = x
-                if y < y_min:
-                    y_min = y
-                elif y > y_max:
-                    y_max = y
-
-print(x_min, x_max, y_min, y_max)
-
-# MAIN LOOP
-while 1:
-    overlay.update()
-    _, input = capture.read()  # used _ to ignore the boolean returned by .read()
-    input = cv2.flip(input, 1)
-    blink_count_new = blink_count
-    # grayscale = cv2.cvtColor(input, cv2.COLOR_BGR2GRAY)
-    # rects = detector(grayscale, 0)
-    # if len(rects) > 0:
-    #     rect = rects[0]
-    # else:
-    #     cv2.imshow("Frame", input)
-    #     k = cv2.waitKey(30) & 0xFF
-    #     continue
-    # blink_count += ear_detector(input,grayscale,rect)
-    # print("blink_count", blink_count)
-    eye_frames = detect_eyes(input)
-    if eye_frames is not None:
-        blink_count += ear_detector(input)
-        keypoints = find_keypoints(eye_frames)
-        if keypoints:
-            x = keypoints[0].pt[0]
-            y = keypoints[0].pt[1]
-            if count == 20:
-                move_mouse(average_x, average_y)
-                # print('keypoint: ', keypoints[0].pt[0], keypoints[0].pt[1])
-
-                # print('keypoint: ', x, y)
-                # pyautogui.moveTo(x, y, 1)
-
-            else:
-                average_x.append(x)
-                average_y.append(y)
-
-    # print('count: ', count)
-    if count > 20:
-        count = 0
-    else:
-        count += 1
-
-    k = cv2.waitKey(30) & 0xff
-    if k == 27:
-        break
-
-capture.release()
-cv2.destroyAllWindows()
