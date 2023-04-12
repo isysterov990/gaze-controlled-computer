@@ -10,6 +10,10 @@ def open_browser():
     # lbl_value["text"] = f"{value - 1}"
 
 
+def open_email():
+    webbrowser.open("https://www.google.com/gmail/about/")
+
+
 def open_file():
     path = "/Users/chris/Documents/"
     if os.path.exists(path):
@@ -109,9 +113,9 @@ def click_handler(event):
     elif get_quadrant(event.x, event.y) == 5:
         open_file()
     elif get_quadrant(event.x, event.y) == 3:
-        print("South")
+        open_email()
     elif get_quadrant(event.x, event.y) == 4:
-        print("South")
+        open_email()
     elif get_quadrant(event.x, event.y) == 2:
         print("West")
 
@@ -145,8 +149,8 @@ def create_gui(x, y):
     canvas.place(relx=0.5, rely=0.5, anchor='center')
 
     north_label = tk.Label(overlay, text="Open Browser", font=("Arial", 20))
-    south_label = tk.Label(overlay, text="Open File Explorer", font=("Arial", 20))
-    east_label = tk.Label(overlay, text="East", font=("Arial", 20))
+    south_label = tk.Label(overlay, text="Open Email", font=("Arial", 20))
+    east_label = tk.Label(overlay, text="Open File Explorer", font=("Arial", 20))
     west_label = tk.Label(overlay, text="West", font=("Arial", 20))
 
     north_label.place(x=x / 2, y=y / 4, anchor="center")
