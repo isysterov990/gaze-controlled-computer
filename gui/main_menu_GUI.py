@@ -7,14 +7,13 @@ from gui.tracker import track_eyes
 
 script_dir = sys.path[0]
 main_menu = Tk()
-
+calibration_points = []
 circle_radius = 50
 circle_positions = [(100, 100), (1720, 100), (1720, 880), (100, 880)]
 
 
 # circle_positions = [(100, 100)]
 def open_calibration_window():
-    calibration_points = []
     calibration_window = Toplevel(main_menu)
     calibration_window.geometry('1920x1080')
     calibration_window.attributes('-fullscreen', True)
@@ -73,6 +72,10 @@ def open_calibration_window():
     calibration_window.mainloop()
 
 
+def check_calibration():
+    if calibration_points:
+        track_eyes(calibration_points)
+
 def open_main_menu():
     # Define menu dimensions and center window
     w = 521
@@ -123,7 +126,7 @@ def open_main_menu():
         image=button_image_1,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: print("button_1 clicked"),
+        command=check_calibration,
         relief="flat"
     )
     button_1.place(
