@@ -8,49 +8,154 @@ screen_x = root.winfo_screenwidth()
 screen_y = root.winfo_screenheight()
 WINDOW_WIDTH = round(screen_x*0.6)
 WINDOW_HEIGHT = round(screen_y*0.3)
-print(WINDOW_HEIGHT)
 MAIN_COL = '#000000'
-ACCENT_COL = '#DE5F2C'
+ACCENT_COL = '#2596BE'
 
 root.title("Accessible Keyboard")
-root.geometry(f"{WINDOW_WIDTH+10}x{WINDOW_HEIGHT+10}")
+root.geometry(f"{WINDOW_WIDTH-145}x{WINDOW_HEIGHT+10}")
 root.configure(bg=MAIN_COL)
 root.attributes('-topmost', True)
 root.attributes('-alpha', 0.8)
 root.resizable(False, False)
 
-row1 = ['Esc', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace']
-row2 = ['Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '[', ']', '\\']
-row3 = ['CapsLock', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', 'Enter']
-row4 = ['Shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/', 'Up']
-row5 = ['Ctrl', 'Win', 'Alt', ' ', 'Alt', 'Fn', 'Left', 'Down', 'Right']
+row1 = ['Esc', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', 'Backspace']
+row2 = ['Tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']']
+row3 = ['CapsLock', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', 'Enter', '\\']
+row4 = ['Shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', '↑', '=']
+row5 = ['Ctrl', 'Win', 'Alt', ' ', 'Alt', 'Fn', '←', '↓', '→']
 rows = [row1, row2, row3, row4, row5]
-
-specials = ['Ctrl', 'Alt', 'Shift', 'Win']
-nonLetters = specials + ['Esc', 'Tab', 'Del', 'Backspace', 'CapsLock', 'Enter', 'Up', 'Left', 'Down', 'Right']
 allButtons = []
+selected_button_index = 31
+selected_button = None
 
 width50 = [' ']
 
-def on_enter(e):
-    e.widget.configure(bg='#ccc', fg='#000')
+def on_enter(button):
+    button.configure(bg=ACCENT_COL, fg='#000')
 
-    if btnLabels[e.widget]:
-        btnLabels[e.widget].configure(bg='#ccc', fg='#666')
+    if btnLabels[button]:
+        btnLabels[button].configure(bg='#ccc', fg='#666')
 
-def on_leave(e):
-    e.widget.configure(bg='#333', fg='#fff')
+def on_leave(button):
+    button.configure(bg='#333', fg='#fff')
 
-    if btnLabels[e.widget]:
-        btnLabels[e.widget].configure(bg='#333', fg='#fff')
+    if btnLabels[button]:
+        btnLabels[button].configure(bg='#333', fg='#fff')
+
+def selectFrame_right(e): # move selected key right
+    global selected_button
+    global selected_button_index
+    if(selected_button_index <= 59):
+        on_leave(selected_button)
+        selected_button = allButtons[selected_button_index+1]
+        selected_button_index += 1
+        on_enter(selected_button)
+
+def selectFrame_left(e): # move selected key left
+    global selected_button
+    global selected_button_index
+    if(selected_button_index >= 1):
+        on_leave(selected_button)
+        selected_button = allButtons[selected_button_index-1]
+        selected_button_index -= 1
+        on_enter(selected_button)
+
+def selectFrame_up(e): # move selected key up
+    global selected_button
+    global selected_button_index
+    if(selected_button_index >= 13):
+        on_leave(selected_button)
+        if(selected_button_index == 55): #adjust for spacebar
+            selected_button = allButtons[44]
+            selected_button_index = 44
+        elif(selected_button_index >= 56 and selected_button_index <= 60): #adjust for spacebar
+            selected_button = allButtons[selected_button_index-9]
+            selected_button_index -= 9
+        else:
+            selected_button = allButtons[selected_button_index-13]
+            selected_button_index -= 13
+        on_enter(selected_button)
+
+def selectFrame_down(e): # move selected key down
+    global selected_button
+    global selected_button_index
+    if(selected_button_index <= 51):
+        on_leave(selected_button)
+        if(selected_button_index >= 43 and selected_button_index <= 46): #adjust for spacebar
+            selected_button = allButtons[55]
+            selected_button_index = 55
+        elif(selected_button_index >= 47 and selected_button_index <= 51): #adjust for spacebar
+            selected_button = allButtons[selected_button_index+9]
+            selected_button_index += 9
+        else:
+            selected_button = allButtons[selected_button_index+13]
+            selected_button_index += 13
+        on_enter(selected_button)
 
 def handleClick(e):
-    print(e.widget)
-    if btnLabels[e.widget]:
-        btnLabels[e.widget].configure(bg=ACCENT_COL, fg='#000')
-        key = e.widget.cget('text')
-        prev_win.activate()
-        pyautogui.typewrite(key)
+    if btnLabels[selected_button]:
+        key = selected_button.cget('text')
+        if key == 'Esc':
+            prev_win.activate()
+            pyautogui.press('esc')
+            pyautogui.getWindowsWithTitle('Accessible Keyboard')[0].activate()
+        elif key == 'Backspace':
+            prev_win.activate()
+            pyautogui.press('backspace')
+            pyautogui.getWindowsWithTitle('Accessible Keyboard')[0].activate()
+        elif key == 'Tab':
+            prev_win.activate()
+            pyautogui.press('tab')
+            pyautogui.getWindowsWithTitle('Accessible Keyboard')[0].activate()
+        elif key == 'CapsLock':
+            prev_win.activate()
+            pyautogui.press('capslock')
+            pyautogui.getWindowsWithTitle('Accessible Keyboard')[0].activate()
+        elif key == 'Enter':
+            prev_win.activate()
+            pyautogui.press('enter')
+            pyautogui.getWindowsWithTitle('Accessible Keyboard')[0].activate()
+        elif key == '←':
+            prev_win.activate()
+            pyautogui.press('left')
+            pyautogui.getWindowsWithTitle('Accessible Keyboard')[0].activate()
+        elif key == '→':
+            prev_win.activate()
+            pyautogui.press('right')
+            pyautogui.getWindowsWithTitle('Accessible Keyboard')[0].activate()
+        elif key == '↑':
+            prev_win.activate()
+            pyautogui.press('up')
+            pyautogui.getWindowsWithTitle('Accessible Keyboard')[0].activate()
+        elif key == '↓':
+            prev_win.activate()
+            pyautogui.press('down')
+            pyautogui.getWindowsWithTitle('Accessible Keyboard')[0].activate()
+        elif key == 'Win':
+            prev_win.activate()
+            pyautogui.press('win')
+            pyautogui.getWindowsWithTitle('Accessible Keyboard')[0].activate()
+        elif key == 'Shift':
+            prev_win.activate()
+            pyautogui.press('shift')
+            pyautogui.getWindowsWithTitle('Accessible Keyboard')[0].activate()
+        elif key == 'Ctrl':
+            prev_win.activate()
+            pyautogui.press('ctrl')
+            pyautogui.getWindowsWithTitle('Accessible Keyboard')[0].activate()
+        elif key == 'Alt':
+            prev_win.activate()
+            pyautogui.press('alt')
+            pyautogui.getWindowsWithTitle('Accessible Keyboard')[0].activate()
+        elif key == 'Fn':
+            prev_win.activate()
+            pyautogui.press('fn')
+            pyautogui.getWindowsWithTitle('Accessible Keyboard')[0].activate()
+        else:
+            btnLabels[selected_button].configure(bg=ACCENT_COL, fg='#000')
+            prev_win.activate()
+            pyautogui.typewrite(key)
+            pyautogui.getWindowsWithTitle('Accessible Keyboard')[0].activate()
 
 btnLabels = {}
 
@@ -79,14 +184,18 @@ for r in rows:
         frame.place(x=X, y=Y, width=btnWidth, height=btnHeight)
         X += btnWidth
 
-        btn.bind('<Button-1>', handleClick)
-        btn.bind('<ButtonRelease-1>', on_enter)
-        btn.bind('<Enter>', on_enter)
-        btn.bind('<Leave>', on_leave)
+        root.bind('<Right>', selectFrame_right)
+        root.bind('<Left>', selectFrame_left)
+        root.bind('<Up>', selectFrame_up)
+        root.bind('<Down>', selectFrame_down)
+        root.bind('<space>', handleClick)
 
         btnLabels[btn] = label
         allButtons.append(btn)
     Y += btnHeight
+
+selected_button = allButtons[selected_button_index]
+on_enter(selected_button)
 
 while True:
     root.update_idletasks()
@@ -94,6 +203,5 @@ while True:
     if(temp_win != None):
         if(temp_win.title != "Accessible Keyboard"):
             prev_win = temp_win
-            print('in if: ' + str(prev_win))
     time.sleep(0.0001)
     root.update()
