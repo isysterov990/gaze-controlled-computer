@@ -12,6 +12,9 @@ import gui
 from gui.calibration import adjust_eye_tracking
 from gui.gui import Gui
 
+#GLOBAL VARIABLES
+gaze_position = None
+
 pyautogui.FAILSAFE = False
 screen_width, screen_height = pyautogui.size()
 
@@ -35,31 +38,34 @@ def mouth_aspect_ratio(mouth):
     mar = (A + B ) / (2.0 * C)
     return mar
 
-def get_direction(gaze_position):
-    # Determine direction of gaze
-    screen_center = (640 // 2, 480 // 2)  # assume screen size is 640x480
-    if gaze_position[0] < screen_center[0]:
-        if gaze_position[1] < screen_center[1]:
-            direction = "Top Right"
-        elif gaze_position[1] > screen_center[1]:
-            direction = "Bottom Right"
+def get_direction():
+    global gaze_position
+    if(gaze_position != None):
+        # Determine direction of gaze
+        screen_center = (640 // 2, 480 // 2)  # assume screen size is 640x480
+        if gaze_position[0] < screen_center[0]:
+            if gaze_position[1] < screen_center[1]:
+                direction = "Right"
+            elif gaze_position[1] > screen_center[1]:
+                direction = "Right"
+            else:
+                direction = "Right"
+        elif gaze_position[0] > screen_center[0]:
+            if gaze_position[1] < screen_center[1]:
+                direction = "Left"
+            elif gaze_position[1] > screen_center[1]:
+                direction = "Left"
+            else:
+                direction = "Left"
         else:
-            direction = "Right"
-    elif gaze_position[0] > screen_center[0]:
-        if gaze_position[1] < screen_center[1]:
-            direction = "Top Left"
-        elif gaze_position[1] > screen_center[1]:
-            direction = "Bottom Left"
-        else:
-            direction = "Left"
-    else:
-        if gaze_position[1] < screen_center[1]:
-            direction = "Top"
-        elif gaze_position[1] > screen_center[1]:
-            direction = "Bottom"
-        else:
-            direction = "Center"
-    print("Gaze direction:", direction)
+            if gaze_position[1] < screen_center[1]:
+                direction = "Top"
+            elif gaze_position[1] > screen_center[1]:
+                direction = "Bottom"
+            else:
+                direction = "Middle"
+        print("Gaze direction:", direction)
+        return direction
 
 def create_window():
     screen_x, screen_y = pyautogui.size()
@@ -103,7 +109,6 @@ class Tracker:
                                 (left_eye_position[1] + right_eye_position[1]) // 2)
                 gaze_position = (int(gaze_position[0]), int(gaze_position[1]))
 
-                #get_direction(gaze_position)
 
                 mouse_speed = 50
                 movement_range = 10000
