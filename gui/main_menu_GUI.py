@@ -22,7 +22,8 @@ def open_calibration_window():
     calibration_instructions = PhotoImage(file=os.path.join(script_dir, "./images/calibration_instruction.png"))
 
     def changeText():
-        button_1.config(image=calibration_instructions, command=calibrate)
+        button_1.config(image=calibration_instructions)
+        calibrate()
 
     cal_canvas = Canvas(
         calibration_window,
@@ -50,6 +51,7 @@ def open_calibration_window():
     )
 
     def calibrate():
+        calibration_points.clear()
         # Collect calibration points for each circle
         for circle_position in circle_positions:
             # Draw the circle on the canvas
@@ -66,7 +68,6 @@ def open_calibration_window():
         print(calibration_points)
         calibration_window
         calibration_window.destroy()
-        track_eyes(calibration_points)
 
     calibration_window.resizable(False, False)
     calibration_window.mainloop()
