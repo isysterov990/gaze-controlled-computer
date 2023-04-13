@@ -125,7 +125,7 @@ def click_handler(event):
 def create_gui(x, y):
     print(x, y)
     overlay = tk.Toplevel()
-    overlay.overrideredirect(True)
+    overlay.overrideredirect(False)
     overlay.wm_attributes("-topmost", True)
     overlay.attributes("-alpha", 0.8)
     overlay.geometry("{}x{}+0+0".format(x, y))
