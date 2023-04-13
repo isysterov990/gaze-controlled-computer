@@ -2,17 +2,32 @@ from tkinter import Tk, Frame, Button, Label
 from tkinter.font import Font as font
 import pyautogui
 import time
+
+#GLOBAL VARIABLES
 gaze_right = False
+gaze_left = False
+gaze_up = False
+gaze_down = False
+selected_button_index = 31
+selected_button = None
 
 def create_keyboard():
     root = Tk()
     screen_x = root.winfo_screenwidth()
     screen_y = root.winfo_screenheight()
-    print(screen_x, screen_y)
     WINDOW_WIDTH = round(0.8 * screen_x)
     WINDOW_HEIGHT = round(0.37 * screen_y)
     MAIN_COL = '#000000'
     ACCENT_COL = '#2596BE'
+    
+    #GLOBAL VARIABLES
+    global gaze_right
+    global gaze_left
+    global gaze_up
+    global gaze_down
+    global selected_button
+    global selected_button_index
+
 
     root.title("Accessible Keyboard")
     root.geometry(f"{WINDOW_WIDTH - 145}x{WINDOW_HEIGHT + 10}+250+590")
@@ -28,16 +43,28 @@ def create_keyboard():
     row5 = ['Ctrl', 'Win', 'Alt', ' ', 'Alt', 'Fn', '←', '↓', '→']
     rows = [row1, row2, row3, row4, row5]
     allButtons = []
-    selected_button_index = 31
-    selected_button = None
 
     width50 = [' ']
 
 
     def track_direction():
         global gaze_right
+        global gaze_left
+        global gaze_up
+        global gaze_down
+
         if gaze_right:
             selectFrame_right()
+            gaze_right = False
+        if gaze_left:
+            selectFrame_left()
+            gaze_left = False
+        if gaze_up:
+            selectFrame_up()
+            gaze_up = False
+        if gaze_down:
+            selectFrame_down()
+            gaze_down = False
             
 
     def on_enter(button):
@@ -52,7 +79,7 @@ def create_keyboard():
         if btnLabels[button]:
             btnLabels[button].configure(bg='#333', fg='#fff')
 
-    def selectFrame_right(e):  # move selected key right
+    def selectFrame_right():  # move selected key right
         global selected_button
         global selected_button_index
         if (selected_button_index <= 59):
@@ -61,7 +88,7 @@ def create_keyboard():
             selected_button_index += 1
             on_enter(selected_button)
 
-    def selectFrame_left(e):  # move selected key left
+    def selectFrame_left():  # move selected key left
         global selected_button
         global selected_button_index
         if (selected_button_index >= 1):
@@ -70,7 +97,7 @@ def create_keyboard():
             selected_button_index -= 1
             on_enter(selected_button)
 
-    def selectFrame_up(e):  # move selected key up
+    def selectFrame_up():  # move selected key up
         global selected_button
         global selected_button_index
         if (selected_button_index >= 13):
@@ -86,7 +113,7 @@ def create_keyboard():
                 selected_button_index -= 13
             on_enter(selected_button)
 
-    def selectFrame_down(e):  # move selected key down
+    def selectFrame_down():  # move selected key down
         global selected_button
         global selected_button_index
         if (selected_button_index <= 51):
@@ -102,7 +129,7 @@ def create_keyboard():
                 selected_button_index += 13
             on_enter(selected_button)
 
-    def handleClick(e):
+    def handleClick():
         if btnLabels[selected_button]:
             key = selected_button.cget('text')
             if key == 'Esc':
@@ -195,12 +222,6 @@ def create_keyboard():
             frame.place(x=X, y=Y, width=btnWidth, height=btnHeight)
             X += btnWidth
 
-            # root.bind(gaze_right, selectFrame_right)
-            # root.bind(gaze_left, selectFrame_left)
-            # root.bind(gaze_up, selectFrame_up)
-            root.bind('<Down>', selectFrame_down)
-            root.bind('<space>', handleClick)
-
             btnLabels[btn] = label
             allButtons.append(btn)
         Y += btnHeight
@@ -214,15 +235,14 @@ def create_keyboard():
         if (temp_win != None):
             if (temp_win.title != "Accessible Keyboard"):
                 prev_win = temp_win
-        time.sleep(0.0001)
+        gaze_right = True
+        track_direction()
+        time.sleep(0.1)
         root.update()
 
 
 def main():
     create_keyboard()
-    global gaze_right
-    gaze_right = True
-    track_direction()
 
 
 if __name__ == '__main__':
