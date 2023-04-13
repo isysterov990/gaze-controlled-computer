@@ -2,6 +2,7 @@ import subprocess
 import os
 import webbrowser
 import tkinter as tk
+from gui.keyboard import create_keyboard
 
 
 def open_browser():
@@ -20,56 +21,17 @@ def open_file():
         subprocess.call(["open", path])
 
 
+def open_keyboard():
+    create_keyboard()
+    overlay.destroy()
+
+
 def change_button(btn, choice):
     if choice == "Browser":
         btn.config(text="Open Browser", command=open_browser)
     elif choice == "Files":
         btn.config(text="Open File Explorer", command=open_file)
 
-
-# def create_gui(x, y):
-#     # window = tk.Tk()
-#     # This will always make window on top
-#     overlay = tk.Toplevel()
-#     overlay.overrideredirect(True)
-#     overlay.wm_attributes("-topmost", True)
-#     overlay.attributes("-alpha", 0.8)
-#     overlay.geometry("{}x{}+0+0".format(x, y))
-#
-#     btn_north = tk.Button(master=overlay, width=50,
-#                           height=25, text="Open Browser", command=open_browser, bg='white')
-#     btn_north.configure(highlightthickness=0, highlightbackground=btn_north['bg'])
-#     btn_north.place(relx=0.5, rely=0.2, anchor='center')
-#
-#     btn_south = tk.Button(master=overlay, width=50,
-#                           height=25, text="South", command=open_file)
-#     btn_south.place(relx=0.5, rely=0.8, anchor='center')
-#
-#     btn_east = tk.Button(master=overlay, width=50,
-#                          height=25, text="Open File Explorer", command=open_file)
-#     btn_east.place(relx=0.8, rely=0.5, anchor='center')
-#
-#     btn_west = tk.Button(master=overlay, width=50,
-#                          height=25, text="West", command=open_file)
-#     # btn_west.config(bg="white", activebackground="white", alpha=1)
-#     btn_west.place(relx=0.2, rely=0.5, anchor='center')
-#
-#     # btn_change = tk.Button(master=overlay, width=25,
-#     #                        height=25, text="change", command=lambda: change_button(btn_north, "files"), bg='white')
-#     # btn_change.configure(highlightthickness=0, highlightbackground=btn_north['bg'])
-#     # btn_change.place(relx=0.5, rely=0.5, anchor='center')
-#
-#     options = ["Browser", "Files"]
-#
-#     selected_option = tk.StringVar()
-#     selected_option.set("Select")
-#
-#     btn_change = tk.OptionMenu(overlay, selected_option, *options,
-#                                command=lambda choice: change_button(btn_north, choice))
-#     btn_change.configure(highlightthickness=0, highlightbackground=btn_north['bg'])
-#     btn_change.place(relx=0.5, rely=0.5, anchor='center')
-#
-#     return overlay
 
 def get_quadrant(x_coord, y_coord):
     x1, y1 = 0, 0
@@ -83,7 +45,7 @@ def get_quadrant(x_coord, y_coord):
     intercept1 = 956  # y1 - (slope1 * x1)
     intercept2 = 0  # y3 - (slope2 * x3)
 
-    x_intersection = 1470/2
+    x_intersection = 1470 / 2
 
     if x_coord <= x_intersection and y_coord < (slope1 * x_coord + intercept1) and y_coord < (
             slope2 * x_coord + intercept2):
@@ -105,7 +67,7 @@ def get_quadrant(x_coord, y_coord):
         return 6
 
 
-def click_handler(event):
+def click_handler(event, overlay):
     if get_quadrant(event.x, event.y) == 1:
         open_browser()
     elif get_quadrant(event.x, event.y) == 6:
@@ -117,7 +79,8 @@ def click_handler(event):
     elif get_quadrant(event.x, event.y) == 4:
         open_email()
     elif get_quadrant(event.x, event.y) == 2:
-        print("West")
+        open_keyboard()
+        overlay.destroy()
 
     print("Clicked at ({}, {})".format(event.x, event.y))
 
@@ -125,7 +88,7 @@ def click_handler(event):
 def create_gui(x, y):
     print(x, y)
     overlay = tk.Toplevel()
-    overlay.overrideredirect(False)
+    overlay.overrideredirect(True)
     overlay.wm_attributes("-topmost", True)
     overlay.attributes("-alpha", 0.8)
     overlay.geometry("{}x{}+0+0".format(x, y))
@@ -145,13 +108,13 @@ def create_gui(x, y):
     line1 = canvas.create_line(0, 0, x, y, fill="black")
     line2 = canvas.create_line(0, y, x, 0, fill="black")
 
-    canvas.bind("<Button-1>", click_handler)
+    canvas.bind("<Button-1>", lambda event: click_handler(event, overlay))
     canvas.place(relx=0.5, rely=0.5, anchor='center')
 
     north_label = tk.Label(overlay, text="Open Browser", font=("Arial", 20))
     south_label = tk.Label(overlay, text="Open Email", font=("Arial", 20))
     east_label = tk.Label(overlay, text="Open File Explorer", font=("Arial", 20))
-    west_label = tk.Label(overlay, text="West", font=("Arial", 20))
+    west_label = tk.Label(overlay, text="Open Keyboard", font=("Arial", 20))
 
     north_label.place(x=x / 2, y=y / 4, anchor="center")
     south_label.place(x=x / 2, y=y * 3 / 4, anchor="center")
