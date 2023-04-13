@@ -66,58 +66,65 @@ def get_quadrant(x_coord, y_coord):
         return 6
 
 
-def click_handler(event, overlay):
-    if get_quadrant(event.x, event.y) == 1:
-        open_browser()
-    elif get_quadrant(event.x, event.y) == 6:
-        open_browser()
-    elif get_quadrant(event.x, event.y) == 5:
-        open_file()
-    elif get_quadrant(event.x, event.y) == 3:
-        open_email()
-    elif get_quadrant(event.x, event.y) == 4:
-        open_email()
-    elif get_quadrant(event.x, event.y) == 2:
-        open_keyboard()
-        overlay.destroy()
+class Gui:
+    def __init__(self, x, y):
+        
+#def create_gui(x, y):
+        print(x, y)
+        self.overlay = tk.Tk()
+        self.overlay.overrideredirect(True)
+        self.overlay.wm_attributes("-topmost", True)
+        self.overlay.attributes("-alpha", 0.8)
+        self.overlay.geometry("{}x{}+0+0".format(x, y))
 
-    print("Clicked at ({}, {})".format(event.x, event.y))
+        canvas = tk.Canvas(
+            self.overlay,
+            # bg="white",
+            height=y,
+            width=x,
+            bd=0,
+            highlightthickness=0,
+            relief="ridge"
+        )
 
+        canvas.pack()
 
-def create_gui(x, y):
-    print(x, y)
-    overlay = tk.Toplevel()
-    overlay.overrideredirect(True)
-    overlay.wm_attributes("-topmost", True)
-    overlay.attributes("-alpha", 0.8)
-    overlay.geometry("{}x{}+0+0".format(x, y))
+        line1 = canvas.create_line(0, 0, x, y, fill="black")
+        line2 = canvas.create_line(0, y, x, 0, fill="black")
 
-    canvas = tk.Canvas(
-        overlay,
-        # bg="white",
-        height=y,
-        width=x,
-        bd=0,
-        highlightthickness=0,
-        relief="ridge"
-    )
+        canvas.bind("<Button-1>", self.click_handler)
+        canvas.place(relx=0.5, rely=0.5, anchor='center')
 
-    canvas.pack()
+        north_label = tk.Label(self.overlay, text="Open Browser", font=("Arial", 20))
+        south_label = tk.Label(self.overlay, text="Open Email", font=("Arial", 20))
+        east_label = tk.Label(self.overlay, text="Open File Explorer", font=("Arial", 20))
+        west_label = tk.Label(self.overlay, text="West", font=("Arial", 20))
 
-    line1 = canvas.create_line(0, 0, x, y, fill="black")
-    line2 = canvas.create_line(0, y, x, 0, fill="black")
+        north_label.place(x=x / 2, y=y / 4, anchor="center")
+        south_label.place(x=x / 2, y=y * 3 / 4, anchor="center")
+        east_label.place(x=x * 3 / 4, y=y / 2, anchor="center")
+        west_label.place(x=x / 4, y=y / 2, anchor="center")
+        
+        self.overlay.mainloop()
+        
+    def click_handler(self, event):
+        if get_quadrant(event.x, event.y) == 1:
+            open_browser()
+            self.overlay.destroy()
+        elif get_quadrant(event.x, event.y) == 6:
+            open_browser()
+            self.overlay.destroy()
+        elif get_quadrant(event.x, event.y) == 5:
+            open_file()
+            self.overlay.destroy()
+        elif get_quadrant(event.x, event.y) == 3:
+            open_email()
+            self.overlay.destroy()
+        elif get_quadrant(event.x, event.y) == 4:
+            open_email()
+            self.overlay.destroy()
+        elif get_quadrant(event.x, event.y) == 2:
+            print("West")
+            self.overlay.destroy()
 
-    canvas.bind("<Button-1>", lambda event: click_handler(event, overlay))
-    canvas.place(relx=0.5, rely=0.5, anchor='center')
-
-    north_label = tk.Label(overlay, text="Open Browser", font=("Arial", 20))
-    south_label = tk.Label(overlay, text="Open Email", font=("Arial", 20))
-    east_label = tk.Label(overlay, text="Open File Explorer", font=("Arial", 20))
-    west_label = tk.Label(overlay, text="Open Keyboard", font=("Arial", 20))
-
-    north_label.place(x=x / 2, y=y / 4, anchor="center")
-    south_label.place(x=x / 2, y=y * 3 / 4, anchor="center")
-    east_label.place(x=x * 3 / 4, y=y / 2, anchor="center")
-    west_label.place(x=x / 4, y=y / 2, anchor="center")
-
-    return overlay
+        print("Clicked at ({}, {})".format(event.x, event.y))

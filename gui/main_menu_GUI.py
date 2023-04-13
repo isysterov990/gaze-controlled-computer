@@ -3,7 +3,7 @@ import sys
 from tkinter import *
 
 from gui.calibration import get_gaze_point
-from gui.tracker import track_eyes
+from gui.tracker import Tracker
 
 script_dir = sys.path[0]
 main_menu = Tk()
@@ -75,7 +75,7 @@ def open_calibration_window():
 
 def check_calibration():
     if calibration_points:
-        track_eyes(calibration_points)
+        Tracker.track_eyes(calibration_points)
 
 def open_main_menu():
     # Define menu dimensions and center window
