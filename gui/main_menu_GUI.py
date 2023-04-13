@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 from tkinter import *
 
 from gui.calibration import get_gaze_point
@@ -66,7 +67,7 @@ def open_calibration_window():
             circle_calibration_points = get_gaze_point()
             calibration_points.append(circle_calibration_points)
         print(calibration_points)
-        calibration_window
+        time.sleep(1)
         calibration_window.destroy()
 
     calibration_window.resizable(False, False)
