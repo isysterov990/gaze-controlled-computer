@@ -23,7 +23,6 @@ def open_file():
 
 def open_keyboard():
     create_keyboard()
-    overlay.destroy()
 
 
 def change_button(btn, choice):
