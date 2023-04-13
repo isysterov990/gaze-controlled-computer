@@ -60,7 +60,7 @@ circle_radius = 50
 
 
 def get_gaze_point():
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
     # Initialize the dlib face detector and facial landmark predictor

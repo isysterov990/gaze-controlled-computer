@@ -39,7 +39,7 @@ def track_eyes(calibration_points):
     COUNTER_EYE = 0
     COUNTER_MOUTH = 0
     KEEP_TRACKING = True
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
     detector = dlib.get_frontal_face_detector()
