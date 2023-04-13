@@ -2,6 +2,7 @@ from tkinter import Tk, Frame, Button, Label
 from tkinter.font import Font as font
 import pyautogui
 import time
+gaze_right = False
 
 def create_keyboard():
     root = Tk()
@@ -9,12 +10,12 @@ def create_keyboard():
     screen_y = root.winfo_screenheight()
     print(screen_x, screen_y)
     WINDOW_WIDTH = round(0.8 * screen_x)
-    WINDOW_HEIGHT = round(0.37* screen_y)
+    WINDOW_HEIGHT = round(0.37 * screen_y)
     MAIN_COL = '#000000'
     ACCENT_COL = '#2596BE'
 
     root.title("Accessible Keyboard")
-    root.geometry(f"{WINDOW_WIDTH-145}x{WINDOW_HEIGHT+10}+250+590")
+    root.geometry(f"{WINDOW_WIDTH - 145}x{WINDOW_HEIGHT + 10}+250+590")
     root.configure(bg=MAIN_COL)
     root.attributes('-topmost', True)
     root.attributes('-alpha', 0.8)
@@ -32,6 +33,13 @@ def create_keyboard():
 
     width50 = [' ']
 
+
+    def track_direction():
+        global gaze_right
+        if gaze_right:
+            selectFrame_right()
+            
+
     def on_enter(button):
         button.configure(bg=ACCENT_COL, fg='#000')
 
@@ -44,53 +52,53 @@ def create_keyboard():
         if btnLabels[button]:
             btnLabels[button].configure(bg='#333', fg='#fff')
 
-    def selectFrame_right(e): # move selected key right
+    def selectFrame_right(e):  # move selected key right
         global selected_button
         global selected_button_index
-        if(selected_button_index <= 59):
+        if (selected_button_index <= 59):
             on_leave(selected_button)
-            selected_button = allButtons[selected_button_index+1]
+            selected_button = allButtons[selected_button_index + 1]
             selected_button_index += 1
             on_enter(selected_button)
 
-    def selectFrame_left(e): # move selected key left
+    def selectFrame_left(e):  # move selected key left
         global selected_button
         global selected_button_index
-        if(selected_button_index >= 1):
+        if (selected_button_index >= 1):
             on_leave(selected_button)
-            selected_button = allButtons[selected_button_index-1]
+            selected_button = allButtons[selected_button_index - 1]
             selected_button_index -= 1
             on_enter(selected_button)
 
-    def selectFrame_up(e): # move selected key up
+    def selectFrame_up(e):  # move selected key up
         global selected_button
         global selected_button_index
-        if(selected_button_index >= 13):
+        if (selected_button_index >= 13):
             on_leave(selected_button)
-            if(selected_button_index == 55): #adjust for spacebar
+            if (selected_button_index == 55):  # adjust for spacebar
                 selected_button = allButtons[44]
                 selected_button_index = 44
-            elif(selected_button_index >= 56 and selected_button_index <= 60): #adjust for spacebar
-                selected_button = allButtons[selected_button_index-9]
+            elif (selected_button_index >= 56 and selected_button_index <= 60):  # adjust for spacebar
+                selected_button = allButtons[selected_button_index - 9]
                 selected_button_index -= 9
             else:
-                selected_button = allButtons[selected_button_index-13]
+                selected_button = allButtons[selected_button_index - 13]
                 selected_button_index -= 13
             on_enter(selected_button)
 
-    def selectFrame_down(e): # move selected key down
+    def selectFrame_down(e):  # move selected key down
         global selected_button
         global selected_button_index
-        if(selected_button_index <= 51):
+        if (selected_button_index <= 51):
             on_leave(selected_button)
-            if(selected_button_index >= 43 and selected_button_index <= 46): #adjust for spacebar
+            if (selected_button_index >= 43 and selected_button_index <= 46):  # adjust for spacebar
                 selected_button = allButtons[55]
                 selected_button_index = 55
-            elif(selected_button_index >= 47 and selected_button_index <= 51): #adjust for spacebar
-                selected_button = allButtons[selected_button_index+9]
+            elif (selected_button_index >= 47 and selected_button_index <= 51):  # adjust for spacebar
+                selected_button = allButtons[selected_button_index + 9]
                 selected_button_index += 9
             else:
-                selected_button = allButtons[selected_button_index+13]
+                selected_button = allButtons[selected_button_index + 13]
                 selected_button_index += 13
             on_enter(selected_button)
 
@@ -166,29 +174,30 @@ def create_keyboard():
     for r in rows:
         X = 5
         for i in r:
-            btnWidth = 0.0688*WINDOW_WIDTH
-            btnHeight = 0.2*WINDOW_HEIGHT
+            btnWidth = 0.0688 * WINDOW_WIDTH
+            btnHeight = 0.2 * WINDOW_HEIGHT
 
-            padx = round(btnWidth/9)
-            pady = round(btnHeight/10)
+            padx = round(btnWidth / 9)
+            pady = round(btnHeight / 10)
 
             frame = Frame(root, highlightbackground=MAIN_COL, highlightthickness=4)
 
             anchor = 'c'
             label = Label()
 
-            btn = Button(frame, activebackground=ACCENT_COL, text=i, bg='#333', fg='#fff', relief='flat', padx=padx, pady=pady, borderwidth=0, anchor=anchor, font=font(size=11), takefocus=False)
+            btn = Button(frame, activebackground=ACCENT_COL, text=i, bg='#333', fg='#fff', relief='flat', padx=padx,
+                         pady=pady, borderwidth=0, anchor=anchor, font=font(size=11), takefocus=False)
 
             if i in width50:
                 btnWidth *= 5
-            
+
             btn.place(x=0, y=0, width=btnWidth, height=btnHeight)
             frame.place(x=X, y=Y, width=btnWidth, height=btnHeight)
             X += btnWidth
 
-            root.bind('<Right>', selectFrame_right)
-            root.bind('<Left>', selectFrame_left)
-            root.bind('<Up>', selectFrame_up)
+            # root.bind(gaze_right, selectFrame_right)
+            # root.bind(gaze_left, selectFrame_left)
+            # root.bind(gaze_up, selectFrame_up)
             root.bind('<Down>', selectFrame_down)
             root.bind('<space>', handleClick)
 
@@ -202,8 +211,19 @@ def create_keyboard():
     while True:
         root.update_idletasks()
         temp_win = pyautogui.getActiveWindow()
-        if(temp_win != None):
-            if(temp_win.title != "Accessible Keyboard"):
+        if (temp_win != None):
+            if (temp_win.title != "Accessible Keyboard"):
                 prev_win = temp_win
         time.sleep(0.0001)
         root.update()
+
+
+def main():
+    create_keyboard()
+    global gaze_right
+    gaze_right = True
+    track_direction()
+
+
+if __name__ == '__main__':
+    main()
