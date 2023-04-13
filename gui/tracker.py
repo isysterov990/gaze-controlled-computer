@@ -1,12 +1,16 @@
+import collections
 import time
-
 import cv2
 import dlib
 import numpy as np
 import pyautogui
 from imutils import face_utils
 
+import gui
 from gui.calibration import adjust_eye_tracking
+
+#GLOBAL VARIABLES
+gaze_position = None
 
 pyautogui.FAILSAFE = False
 screen_width, screen_height = pyautogui.size()
@@ -31,6 +35,36 @@ def mouth_aspect_ratio(mouth):
     mar = (A + B ) / (2.0 * C)
     return mar
 
+def get_direction():
+    global gaze_position
+    if(gaze_position != None):
+        # Determine direction of gaze
+        screen_center = (640 // 2, 480 // 2)  # assume screen size is 640x480
+        if gaze_position[0] < screen_center[0]:
+            if gaze_position[1] < screen_center[1]:
+                direction = "Right"
+            elif gaze_position[1] > screen_center[1]:
+                direction = "Right"
+            else:
+                direction = "Right"
+        elif gaze_position[0] > screen_center[0]:
+            if gaze_position[1] < screen_center[1]:
+                direction = "Left"
+            elif gaze_position[1] > screen_center[1]:
+                direction = "Left"
+            else:
+                direction = "Left"
+        else:
+            if gaze_position[1] < screen_center[1]:
+                direction = "Top"
+            elif gaze_position[1] > screen_center[1]:
+                direction = "Bottom"
+            else:
+                direction = "Middle"
+        print("Gaze direction:", direction)
+        return direction
+
+
 def track_eyes(calibration_points):
     EYE_AR_THRESH = 0.3
     MOUTH_AR_THRESH = 0.8
@@ -39,12 +73,15 @@ def track_eyes(calibration_points):
     COUNTER_EYE = 0
     COUNTER_MOUTH = 0
     KEEP_TRACKING = True
+    OPEN_GUI = False
     cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor("./models/shape_predictor_68_face_landmarks.dat")
     left_eye_offset, right_eye_offset = adjust_eye_tracking(calibration_points)
+    gui_loop = gui.gui.create_gui(1920, 1080)
+
     while True:
 
         ret, frame = cap.read()
@@ -65,16 +102,26 @@ def track_eyes(calibration_points):
                              (left_eye_position[1] + right_eye_position[1]) // 2)
             gaze_position = (int(gaze_position[0]), int(gaze_position[1]))
 
+            get_direction()
+
+
 
 
             mouse_speed = 50
             movement_range = 10000
             landmarks = face_utils.shape_to_np(landmarks)
-
+            points = collections.deque(maxlen=3)
             if KEEP_TRACKING:
-                # Move the mouse based on the eye tracking
-                mouse_x = int(gaze_position[0] / 640 * screen_width)
-                mouse_y = int(gaze_position[1] / 480 * screen_height)
+
+                # Add the gaze position to the deque
+                points.append(gaze_position)
+
+                # Get the average of the last 10 gaze positions
+                avg_x = sum([p[0] for p in points]) // len(points)
+                avg_y = sum([p[1] for p in points]) // len(points)
+                # Move the mouse based on the average gaze position
+                mouse_x = int(avg_x / 640 * screen_width)
+                mouse_y = int(avg_y / 480 * screen_height)
                 mouse_x_offset = (mouse_x - screen_width / 2) / (screen_width / 2) * movement_range
                 mouse_y_offset = (mouse_y - screen_height / 2) / (screen_height / 2) * movement_range
                 if left_eye_center[0] < right_eye_center[0]:
@@ -103,10 +150,13 @@ def track_eyes(calibration_points):
                 COUNTER_MOUTH +=1
             else:
                 if COUNTER_MOUTH >= MOUTH_AR_CONSEC_FRAMES:
-                    if KEEP_TRACKING:
-                        KEEP_TRACKING = False
+                    if OPEN_GUI:
+                        gui_loop.destroy()
+                        gui_loop = gui.gui.create_gui(1920, 1080)
+                        OPEN_GUI=False
                         time.sleep(2)
                     else:
-                        KEEP_TRACKING = True
+                        gui_loop.update()
+                        OPEN_GUI=True
                         time.sleep(2)
                 COUNTER_MOUTH = 0

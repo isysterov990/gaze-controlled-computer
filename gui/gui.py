@@ -23,7 +23,6 @@ def open_file():
 
 def open_keyboard():
     create_keyboard()
-    overlay.destroy()
 
 
 def change_button(btn, choice):
@@ -67,7 +66,7 @@ def get_quadrant(x_coord, y_coord):
         return 6
 
 
-def click_handler(event, overlay):
+def click_handler(event):
     if get_quadrant(event.x, event.y) == 1:
         open_browser()
     elif get_quadrant(event.x, event.y) == 6:
@@ -80,7 +79,6 @@ def click_handler(event, overlay):
         open_email()
     elif get_quadrant(event.x, event.y) == 2:
         open_keyboard()
-        overlay.destroy()
 
     print("Clicked at ({}, {})".format(event.x, event.y))
 
@@ -108,7 +106,7 @@ def create_gui(x, y):
     line1 = canvas.create_line(0, 0, x, y, fill="black")
     line2 = canvas.create_line(0, y, x, 0, fill="black")
 
-    canvas.bind("<Button-1>", lambda event: click_handler(event, overlay))
+    canvas.bind("<Button-1>", click_handler)
     canvas.place(relx=0.5, rely=0.5, anchor='center')
 
     north_label = tk.Label(overlay, text="Open Browser", font=("Arial", 20))

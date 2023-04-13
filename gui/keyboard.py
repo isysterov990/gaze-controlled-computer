@@ -2,12 +2,10 @@ from tkinter import Tk, Frame, Button, Label
 from tkinter.font import Font as font
 import pyautogui
 import time
+from gui.tracker import *
 
 #GLOBAL VARIABLES
-gaze_right = False
-gaze_left = False
-gaze_up = False
-gaze_down = False
+gaze_direction = 'middle' #default middle
 selected_button_index = 31
 selected_button = None
 
@@ -21,10 +19,7 @@ def create_keyboard():
     ACCENT_COL = '#2596BE'
     
     #GLOBAL VARIABLES
-    global gaze_right
-    global gaze_left
-    global gaze_up
-    global gaze_down
+    global gaze_direction
     global selected_button
     global selected_button_index
 
@@ -48,25 +43,20 @@ def create_keyboard():
 
 
     def track_direction():
-        global gaze_right
-        global gaze_left
-        global gaze_up
-        global gaze_down
-
-        if gaze_right:
-            selectFrame_right()
-            gaze_right = False
-        if gaze_left:
+        global gaze_direction
+        if (gaze_direction == 'Left'):
             selectFrame_left()
-            gaze_left = False
-        if gaze_up:
+            gaze_direction = 'Middle'
+        elif (gaze_direction == 'Right'):
+            selectFrame_right()
+            gaze_direction = 'Middle'
+        elif (gaze_direction == 'Up'):
             selectFrame_up()
-            gaze_up = False
-        if gaze_down:
+            gaze_direction = 'Middle'
+        elif (gaze_direction == 'Down'):
             selectFrame_down()
-            gaze_down = False
+            gaze_direction = 'Middle'
             
-
     def on_enter(button):
         button.configure(bg=ACCENT_COL, fg='#000')
 
@@ -235,7 +225,10 @@ def create_keyboard():
         if (temp_win != None):
             if (temp_win.title != "Accessible Keyboard"):
                 prev_win = temp_win
-        gaze_right = True
+        print("GETTING GAZE\n\n\n")
+        gaze_direction = get_direction()
+        print(gaze_direction)
+        print("\n\n\nGETTING GAZE\n\n\n")
         track_direction()
         time.sleep(0.1)
         root.update()
