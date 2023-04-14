@@ -114,7 +114,7 @@ class Gui:
         north_label = tk.Label(self.overlay, text="Open Browser", font=("Arial", 20))
         south_label = tk.Label(self.overlay, text="Open Email", font=("Arial", 20))
         east_label = tk.Label(self.overlay, text="Open File Explorer", font=("Arial", 20))
-        west_label = tk.Label(self.overlay, text="Open On screen Keyboard", font=("Arial", 20))
+        west_label = tk.Label(self.overlay, text="Open On Screen Keyboard", font=("Arial", 20))
 
         north_label.place(x=x / 2, y=y / 4, anchor="center")
         south_label.place(x=x / 2, y=y * 3 / 4, anchor="center")

@@ -160,7 +160,7 @@ def open_main_menu():
         image=button_image_3,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: print("button_3 clicked"),
+        command=sys.exit,
         relief="flat"
     )
     button_3.place(

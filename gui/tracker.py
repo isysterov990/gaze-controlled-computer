@@ -78,9 +78,9 @@ class Tracker:
 
     def track_eyes(calibration_points):
         EYE_AR_THRESH = 0.3
-        MOUTH_AR_THRESH = 0.8
+        MOUTH_AR_THRESH = 0.5
         EYE_AR_CONSEC_FRAMES = 3
-        MOUTH_AR_CONSEC_FRAMES = 5
+        MOUTH_AR_CONSEC_FRAMES = 3
         COUNTER_EYE = 0
         COUNTER_MOUTH = 0
         GUI_SHOW = False
