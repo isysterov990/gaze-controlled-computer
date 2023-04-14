@@ -83,7 +83,7 @@ class Tracker:
         MOUTH_AR_CONSEC_FRAMES = 5
         COUNTER_EYE = 0
         COUNTER_MOUTH = 0
-        KEEP_TRACKING = True
+        GUI_SHOW = False
         cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
@@ -133,13 +133,23 @@ class Tracker:
                 if mar > MOUTH_AR_THRESH:
                     COUNTER_MOUTH += 1
                 else:
+                    t1 = threading.Thread(target=create_window)
                     if COUNTER_MOUTH >= MOUTH_AR_CONSEC_FRAMES:
-                        try:
-                            subprocess.Popen('TASKKILL /F /IM osk.exe')
-                        except OSError:
-                            print("Keyboard not Open")
+                        if GUI_SHOW:
+                            try:
+                                subprocess.Popen('TASKKILL /F /IM osk.exe')
+                                if t1.is_alive():
+                                    t1.join()
+                            except OSError:
+                                print("Keyboard not Open")
 
-                        threading.Thread(target=create_window).start()
+
+                            GUI_SHOW=False
+                        else:
+                            t1.start()
+                            GUI_SHOW=True
+
+
                     COUNTER_MOUTH = 0
                 if left_eye_center[0] < right_eye_center[0]:
                     if ear >= EYE_AR_THRESH:
