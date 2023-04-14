@@ -37,6 +37,10 @@ def open_keyboard():
         pass
 
 
+def show_desktop():
+    pyautogui.hotkey("win", "d")
+
+
 def change_button(btn, choice):
     if choice == "Browser":
         btn.config(text="Open Browser", command=open_browser)
@@ -80,8 +84,6 @@ def get_quadrant(x_coord, y_coord):
 
 class Gui:
     def __init__(self, x, y):
-        
-#def create_gui(x, y):
         print(x, y)
         self.overlay = tk.Tk()
         self.overlay.overrideredirect(True)
@@ -108,7 +110,7 @@ class Gui:
         canvas.place(relx=0.5, rely=0.5, anchor='center')
 
         north_label = tk.Label(self.overlay, text="Open Browser", font=("Arial", 20))
-        south_label = tk.Label(self.overlay, text="Open Email", font=("Arial", 20))
+        south_label = tk.Label(self.overlay, text="Open desktop", font=("Arial", 20))
         east_label = tk.Label(self.overlay, text="Open File Explorer", font=("Arial", 20))
         west_label = tk.Label(self.overlay, text="Open On screen Keyboard", font=("Arial", 20))
 
@@ -133,8 +135,9 @@ class Gui:
             open_email()
             self.overlay.destroy()
         elif get_quadrant(event.x, event.y) == 4:
-            open_email()
-            self.overlay.destroy()
+            # open_email()
+            show_desktop()
+            # self.overlay.destroy()
         elif get_quadrant(event.x, event.y) == 2:
             open_keyboard()
             self.overlay.destroy()
