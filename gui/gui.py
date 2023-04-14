@@ -12,7 +12,7 @@ import pyautogui
 
 
 def open_browser():
-    webbrowser.open("https://www.torontomu.ca/programs/undergraduate/computer-engineering/")
+    webbrowser.open("https://www.google.com")
 
 
 def open_email():
