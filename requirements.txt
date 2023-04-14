@@ -1,3 +1,4 @@
+keyboard
 opencv-python
 cmake
 dlib

@@ -1,28 +1,40 @@
 import subprocess
 import os
+import sys
+import time
 import webbrowser
 import tkinter as tk
-from gui.keyboard import create_keyboard
+
+import pyautogui
+
+
+# from gui.keyboard import create_keyboard
 
 
 def open_browser():
-    webbrowser.open("https://www.google.ca/?client=safari")
-    # value = int(lbl_value["text"])
-    # lbl_value["text"] = f"{value - 1}"
+    webbrowser.open("https://www.torontomu.ca/programs/undergraduate/computer-engineering/")
 
 
 def open_email():
-    webbrowser.open("https://www.google.com/gmail/about/")
+    webbrowser.open("https://mail.google.com/mail/u/0/?tab=wm#inbox?compose=new")
 
 
 def open_file():
-    path = "/Users/chris/Documents/"
-    if os.path.exists(path):
-        subprocess.call(["open", path])
+    try:
+        subprocess.Popen("explorer")
+        return
+    except OSError:
+        pass
 
 
 def open_keyboard():
-    create_keyboard()
+    try:
+        cmd_path = "C:\\WINDOWS\\system32\\osk.exe"
+        subprocess.Popen([cmd_path], shell=True)
+
+        return
+    except OSError:
+        pass
 
 
 def change_button(btn, choice):
@@ -98,7 +110,7 @@ class Gui:
         north_label = tk.Label(self.overlay, text="Open Browser", font=("Arial", 20))
         south_label = tk.Label(self.overlay, text="Open Email", font=("Arial", 20))
         east_label = tk.Label(self.overlay, text="Open File Explorer", font=("Arial", 20))
-        west_label = tk.Label(self.overlay, text="West", font=("Arial", 20))
+        west_label = tk.Label(self.overlay, text="Open On screen Keyboard", font=("Arial", 20))
 
         north_label.place(x=x / 2, y=y / 4, anchor="center")
         south_label.place(x=x / 2, y=y * 3 / 4, anchor="center")
@@ -124,7 +136,7 @@ class Gui:
             open_email()
             self.overlay.destroy()
         elif get_quadrant(event.x, event.y) == 2:
-            print("West")
+            open_keyboard()
             self.overlay.destroy()
 
         print("Clicked at ({}, {})".format(event.x, event.y))

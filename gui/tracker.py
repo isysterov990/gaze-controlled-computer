@@ -1,7 +1,8 @@
+import subprocess
 import threading
 import collections
 import time
-
+import keyboard
 import cv2
 import dlib
 import numpy as np
@@ -23,7 +24,6 @@ right_eye_roi = [(42, 43, 44, 45, 46, 47)]
 (lStart, lEnd) = face_utils.FACIAL_LANDMARKS_IDXS["left_eye"]
 (rStart, rEnd) = face_utils.FACIAL_LANDMARKS_IDXS["right_eye"]
 (mStart, mEnd) = face_utils.FACIAL_LANDMARKS_IDXS["mouth"]
-
 def eye_aspect_ratio(eye):
     A = np.linalg.norm(eye[1] - eye[5])
     B = np.linalg.norm(eye[2] - eye[4])
@@ -90,7 +90,7 @@ class Tracker:
         detector = dlib.get_frontal_face_detector()
         predictor = dlib.shape_predictor("./models/shape_predictor_68_face_landmarks.dat")
         left_eye_offset, right_eye_offset = adjust_eye_tracking(calibration_points)
-        while True:
+        while not keyboard.is_pressed('esc'):
             ret, frame = cap.read()
             if not ret:
                 continue
@@ -134,6 +134,11 @@ class Tracker:
                     COUNTER_MOUTH += 1
                 else:
                     if COUNTER_MOUTH >= MOUTH_AR_CONSEC_FRAMES:
+                        try:
+                            subprocess.Popen('TASKKILL /F /IM osk.exe')
+                        except OSError:
+                            print("Keyboard not Open")
+
                         threading.Thread(target=create_window).start()
                     COUNTER_MOUTH = 0
                 if left_eye_center[0] < right_eye_center[0]:
@@ -147,5 +152,4 @@ class Tracker:
                             mouse_x_offset *= -1
                         pyautogui.moveTo(screen_width / 2 + mouse_x_offset, screen_height / 2 + mouse_y_offset,
                                         duration=mouse_speed / 1000)
-
 
