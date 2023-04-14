@@ -37,6 +37,10 @@ def open_keyboard():
         pass
 
 
+def show_desktop():
+    pyautogui.hotkey("win", "d")
+
+
 def change_button(btn, choice):
     if choice == "Browser":
         btn.config(text="Open Browser", command=open_browser)
@@ -44,19 +48,19 @@ def change_button(btn, choice):
         btn.config(text="Open File Explorer", command=open_file)
 
 
-def get_quadrant(x_coord, y_coord):
+def get_quadrant(x_coord, y_coord, x, y):
     x1, y1 = 0, 0
-    x2, y2 = 1470, 956
-    x3, y3 = 0, 956
-    x4, y4 = 1470, 0
+    x2, y2 = x, y
+    x3, y3 = 0, y
+    x4, y4 = x, 0
 
     slope2 = (y2 - y1) / (x2 - x1)
     slope1 = (y4 - y3) / (x4 - x3)
 
-    intercept1 = 956  # y1 - (slope1 * x1)
+    intercept1 = y  # y1 - (slope1 * x1)
     intercept2 = 0  # y3 - (slope2 * x3)
 
-    x_intersection = 1470 / 2
+    x_intersection = x / 2
 
     if x_coord <= x_intersection and y_coord < (slope1 * x_coord + intercept1) and y_coord < (
             slope2 * x_coord + intercept2):
@@ -80,14 +84,14 @@ def get_quadrant(x_coord, y_coord):
 
 class Gui:
     def __init__(self, x, y):
-        
-#def create_gui(x, y):
         print(x, y)
         self.overlay = tk.Tk()
         self.overlay.overrideredirect(True)
         self.overlay.wm_attributes("-topmost", True)
         self.overlay.attributes("-alpha", 0.8)
         self.overlay.geometry("{}x{}+0+0".format(x, y))
+        self.x = x
+        self.y = y
 
         canvas = tk.Canvas(
             self.overlay,
@@ -116,26 +120,26 @@ class Gui:
         south_label.place(x=x / 2, y=y * 3 / 4, anchor="center")
         east_label.place(x=x * 3 / 4, y=y / 2, anchor="center")
         west_label.place(x=x / 4, y=y / 2, anchor="center")
-        
+
         self.overlay.mainloop()
-        
+
     def click_handler(self, event):
-        if get_quadrant(event.x, event.y) == 1:
+        if get_quadrant(event.x, event.y, self.x, self.y) == 1:
             open_browser()
             self.overlay.destroy()
-        elif get_quadrant(event.x, event.y) == 6:
+        elif get_quadrant(event.x, event.y, self.x, self.y) == 6:
             open_browser()
             self.overlay.destroy()
-        elif get_quadrant(event.x, event.y) == 5:
+        elif get_quadrant(event.x, event.y, self.x, self.y) == 5:
             open_file()
             self.overlay.destroy()
-        elif get_quadrant(event.x, event.y) == 3:
+        elif get_quadrant(event.x, event.y, self.x, self.y) == 3:
             open_email()
             self.overlay.destroy()
-        elif get_quadrant(event.x, event.y) == 4:
+        elif get_quadrant(event.x, event.y, self.x, self.y) == 4:
             open_email()
             self.overlay.destroy()
-        elif get_quadrant(event.x, event.y) == 2:
+        elif get_quadrant(event.x, event.y, self.x, self.y) == 2:
             open_keyboard()
             self.overlay.destroy()
 
