@@ -155,8 +155,9 @@ ____
 Create keyboard component that will allow the user to pull up a virtual
 keyboard
 ____
+
 [[theory-and-design]]
-== 4 : Theory and Design 
+== Theory and Design 
 
 This chapter covers the theory and design choices made to develop the
 gaze controlled computer. The sections are described in the order in
