@@ -19,7 +19,7 @@ Computer/Electrical Engineering Capstone Design Project
 
 Toronto Metropolitan University, 2023
 
-video::XmJs5W_n69U[youtube]
+video::images/media/video_demo.mp4[autoplay, loop]
 
 == Certification of Authorship
 
